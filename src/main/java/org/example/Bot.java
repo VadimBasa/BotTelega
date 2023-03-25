@@ -1,15 +1,15 @@
 package org.example;
 
-import javassist.Translator;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Bot extends TelegramLongPollingBot {
-
 
 
     public String answer = "Приветствую тебя! Я бот-сонник . " +
@@ -28,13 +28,7 @@ public class Bot extends TelegramLongPollingBot {
         String userName = getUserName(msg);
         Long userId = user.getId();
         System.out.println(user.getFirstName() + " wrote " + msg.getText() + userName);
-        String a = msg.getText();
-        if (a.equals("Гроб")) {
-            answer = "Хорошие новости - Вас ждет повышение по службе!";
 
-            //sendText(userId, answer);
-        }
-        sendText(userId, answer);
 
     }
 
@@ -57,7 +51,7 @@ public class Bot extends TelegramLongPollingBot {
      *
      * @param msg сообщение
      */
-    private String getUserName(Message msg) {
+    String getUserName(Message msg) {
         User user = msg.getFrom();
         String userName = user.getUserName();
         return (userName != null) ? userName : String.format("%s %s", user.getLastName(), user.getFirstName());
@@ -76,6 +70,19 @@ public class Bot extends TelegramLongPollingBot {
             execute(sm);                        //Actually sending the message
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);      //Any error will be printed here
+        }
+    }
+
+    public void SendImg(Long who, String file, String capt) {
+        InputFile input = new InputFile(file);
+        SendPhoto msg1 = SendPhoto.builder()
+                .chatId(who.toString())
+                .photo(input)
+                .caption(capt).build();
+        try {
+            execute(msg1);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 }
